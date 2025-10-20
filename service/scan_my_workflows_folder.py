@@ -17,9 +17,12 @@ async def scan_my_workflows_files(request):
 @server.PromptServer.instance.routes.post('/workspace/file/scan_my_workflows_folder')
 async def scan_my_workflows_files(request):
     reqJson = await request.json()
-    path = reqJson['path']
-    path = os.path.join(get_my_workflows_dir(), path)
-    recursive = reqJson.get('recursive', False)
+    originPath = reqJson['path']
+    path = os.path.join(get_my_workflows_dir(), originPath)
+    if originPath == '':
+        recursive = False
+    else:
+        recursive = reqJson.get('recursive', False)
     metaInfoOnly = reqJson.get('metaInfoOnly', False)
     
     fileList = await asyncio.to_thread(folder_handle, path, recursive, metaInfoOnly)
